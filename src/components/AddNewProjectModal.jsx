@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
-// Add onProjectAdded to the props
 const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
   const [formData, setFormData] = useState({
     projectName: "",
@@ -22,15 +21,9 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // NOTE: Your POST endpoint should match your projectRoute.js: /api/create-project
-      await axios.post("http://localhost:3000/api/create-project", formData); 
-      
+      await axios.post("http://localhost:3000/api/create-project", formData);
       alert("✅ Project Created Successfully!");
-      
-      // 1. Notify the parent to refresh the project list
-      onProjectAdded(); 
-      
-      // 2. Close the modal
+      onProjectAdded();
       onClose();
     } catch (error) {
       console.error(error);
@@ -38,7 +31,6 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
     }
   };
 
-  // Close modal on ESC key
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -52,10 +44,8 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
   };
 
   return (
-    // ... (rest of the modal component code)
-    // The visual rendering of the modal remains the same
-     <AnimatePresence>
-      {/* 🔹 Backdrop */}
+    <AnimatePresence>
+      {/* Backdrop */}
       <motion.div
         onClick={handleBackdropClick}
         className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-md"
@@ -65,7 +55,7 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
         transition={{ duration: 0.25 }}
       />
 
-      {/* 🔹 Modal Container */}
+      {/* Modal Container */}
       <motion.div
         className="fixed inset-0 z-50 flex items-start justify-center"
         initial={{ opacity: 0 }}
@@ -73,7 +63,7 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mt-20 mx-4 relative backdrop-blur-xl bg-opacity-95 border border-white/40"
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl sm:max-w-sm mt-20 mx-4 relative backdrop-blur-xl bg-opacity-95 border border-white/40"
           initial={{ y: -60, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: -40, opacity: 0, scale: 0.95 }}
@@ -97,81 +87,87 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-               <div>
-                 <label>Project Name</label>
-              <input
-                type="text"
-                name="projectName"
-                value={formData.projectName}
-                onChange={handleChange}
-                placeholder="Project Name"
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-                required
-              />
-               </div>
-              <div> <label>Client Name</label>
-              <input
-                type="text"
-                name="clientName"
-                value={formData.clientName}
-                onChange={handleChange}
-                placeholder="Client Name"
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-                required
-              /></div>
-             <div> <label>Start Date</label>
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-              /></div>
-             <div> <label>End date</label>
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-              /></div>
-            <div>
-                  <label>Status</label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Planned">Planned</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-            <div>
+            {/* Use single-column on small screens and 2-column on larger screens */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label>Project Name</label>
+                <input
+                  type="text"
+                  name="projectName"
+                  value={formData.projectName}
+                  onChange={handleChange}
+                  placeholder="Project Name"
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label>Client Name</label>
+                <input
+                  type="text"
+                  name="clientName"
+                  value={formData.clientName}
+                  onChange={handleChange}
+                  placeholder="Client Name"
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label>Start Date</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label>End Date</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label>Status</label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Planned">Planned</option>
+                  <option value="Ongoing">Ongoing</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              <div>
                 <label>Assigned Team</label>
-              <input
-                type="text"
-                name="assignedTeam"
-                value={formData.assignedTeam}
-                onChange={handleChange}
-                placeholder="Assigned Team"
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          <div>
-              <label>Budget</label>
-              <input
-                type="number"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                placeholder="Budget"
-                className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-              />
-          </div>
+                <input
+                  type="text"
+                  name="assignedTeam"
+                  value={formData.assignedTeam}
+                  onChange={handleChange}
+                  placeholder="Assigned Team"
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label>Budget</label>
+                <input
+                  type="number"
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleChange}
+                  placeholder="Budget"
+                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
             {/* Footer */}

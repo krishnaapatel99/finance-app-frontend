@@ -6,7 +6,7 @@ import Sidebar from "../src/components/Sidebar";
 import Navbar from "../src/components/Navbar"; 
 import ProjectsTable from "../src/components/ProjectsTable";
 import AddNewProjectModal from "../src/components/AddNewProjectModal"; // Your modal
-
+const API = import.meta.env.VITE_BACKEND_URL;
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +16,7 @@ const Projects = () => {
     const fetchProjects = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get("http://localhost:3000/api/project");
+            const response = await axios.get(`{API}/api/project`);
             setProjects(response.data);
         } catch (error) {
             console.error("Error fetching projects:", error);

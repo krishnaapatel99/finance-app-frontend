@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar"; // Assuming these exist
 import Navbar from "./Navbar"; // Assuming these exist
 import StatCard from "./StatCard";
 
-
+const API = import.meta.env.VITE_BACKEND_URL;
 // Helper function to format date for display
 const formatDisplayDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -26,7 +26,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchUpcoming = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/upcomingevents");
+                const response = await axios.get(`${API}/api/upcomingevents`);
                 // The backend returns an array; we take the first one
                 setUpcomingProject(response.data[0]); 
             } catch (error) {

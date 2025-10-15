@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+const API = import.meta.env.VITE_BACKEND_URL;
 // Helper to format currency
 const formatCurrency = (amount) => {
     // COALESCE returns a string from the DB, so we parse it first.
@@ -25,7 +25,7 @@ const StatCard = ({ title, value, change, up }) => {
         const fetchFinanceSummary = async () => {
             try {
                 // Endpoint defined in server.js and dashboardRoute.js
-                const response = await axios.get("http://localhost:3000/api/dashboard");
+                const response = await axios.get(`${API}/api/dashboard`);
                 setFinanceSummary(response.data);
             } catch (error) {
                 console.error("Error fetching finance summary:", error);
