@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from './src/components/Dashboard'
 import Project from './pages/project'
-
+import Documents  from "./pages/Documents";
 
 const App = () => {
     // State to manage the visibility of the mobile sidebar
@@ -16,7 +16,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/project" element={<Project/>} />
-
+                <Route path="document" element={<Documents/>}/>
             </Routes>
            
            
