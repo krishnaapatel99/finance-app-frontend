@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-
+const API = import.meta.env.VITE_BACKEND_URL;
 const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
   const [formData, setFormData] = useState({
     projectName: "",
@@ -21,7 +21,7 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/api/create-project", formData);
+      await axios.post(`${API}/api/create-project`, formData);
       alert("✅ Project Created Successfully!");
       onProjectAdded();
       onClose();
