@@ -16,7 +16,7 @@ const Projects = () => {
     const fetchProjects = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`{API}/api/project`);
+            const response = await axios.get(`${API}/api/project`);
             setProjects(response.data);
         } catch (error) {
             console.error("Error fetching projects:", error);
