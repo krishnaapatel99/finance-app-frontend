@@ -26,7 +26,7 @@ const Navbar = ({ toggleSidebar }) => {
                 {/* App Title (Shown on mobile when sidebar is closed) */}
                
             </div>
-            <p className="hidden md:block text-2xl font-extrabold text-black  ">
+            <p className=" text-2xl font-extrabold text-black  ">
                     Company Logo
                 </p>
 
