@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "@fontsource/inter/index.css";
+
+
+/* Add this block to your global CSS file (e.g., src/index.css) */
+
+.projects-table-grid {
+    /* Sets the container to display as a grid */
+    display: grid;
+    /* Defines the 10 columns with fractional widths for flexible sizing */
+    grid-template-columns: 1.5fr 1fr 0.8fr 0.8fr 0.8fr 1fr 1fr 1fr 1fr 0.5fr;
+    /* Centers content vertically in the grid cells */
+    align-items: center; 
+}
