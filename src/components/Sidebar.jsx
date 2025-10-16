@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                    <Link to="/project"> <SidebarButton icon={FolderKanban} text="Projects" fromColor="blue-500" toColor="sky-600" /></Link>
                     <SidebarButton icon={FileText} text="Reports" fromColor="orange-500" toColor="yellow-600" />
                     <Link to="/document"> <SidebarButton icon={FolderKanban} text="Documents" fromColor="blue-500" toColor="sky-600" /></Link>
-                    <SidebarButton icon={ChartColumn} text="Documents" fromColor="purple-500" toColor="fuchsia-600" />
+                    
                 </div>
             </div>
         </>
