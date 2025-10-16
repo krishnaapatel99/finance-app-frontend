@@ -4,7 +4,7 @@ import axios from "axios";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
-const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
+const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
   const [formData, setFormData] = useState({
     file: null,
     type: "",
@@ -14,12 +14,12 @@ const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
 
   useEffect(() => {
     const fetchProjects = async () => {
-    //   try {
-    //     const res = await axios.get(`${API}/api/project`);
-    //     setProjects(res.data);
-    //   } catch (err) {
-    //     console.error("Error loading projects:", err);
-    //   }
+      try {
+        const res = await axios.get(`${API}/api/project`);
+        setProjects(res.data);
+      } catch (err) {
+        console.error("Error loading projects:", err);
+      }
     };
     fetchProjects();
   }, []);
@@ -39,15 +39,15 @@ const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
     form.append("type", formData.type);
     form.append("project", formData.project);
 
-    // try {
-    //   await axios.post(`${API}/api/documents/upload`, form);
-    //   alert("✅ Document uploaded successfully!");
-    //   onDocumentAdded();
-    //   onClose();
-    // } catch (err) {
-    //   console.error(err);
-    //   alert("❌ Failed to upload document");
-    // }
+    try {
+      await axios.post(`${API}/api/documents/add`, form);
+      alert("✅ Document uploaded successfully!");
+      onDocumentAdded();
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to upload document");
+    }
   };
 
   const handleBackdropClick = (e) => {
@@ -82,7 +82,7 @@ const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
               Upload New Document
             </h2>
             <p className="text-sm text-gray-500 mt-1">
-              Choose file and link it to a project
+              Upload invoices, contracts, receipts, or other documents
             </p>
             <button
               onClick={onClose}
@@ -96,13 +96,14 @@ const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label>File</label>
-                <input
-                  type="file"
-                  name="file"
-                  onChange={handleChange}
-                  className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-                  required
-                />
+               <input
+    type="url"
+    name="file_url"
+    placeholder="https://example.com/document.pdf"
+    onChange={handleChange}
+    className="border p-2 rounded-md w-full focus:ring-2 focus:ring-blue-500"
+    required
+  />
               </div>
               <div>
                 <label>Document Type</label>
@@ -158,4 +159,4 @@ const AddNewDocumentModal = ({ onClose, onDocumentAdded }) => {
   );
 };
 
-export default AddNewDocumentModal;
+export default AddNewDocumentModel;

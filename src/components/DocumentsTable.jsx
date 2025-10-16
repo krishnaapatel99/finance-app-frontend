@@ -15,10 +15,10 @@ export default function DocumentsTable({ documents }) {
             <tr>
               <th className="px-4 py-3 text-left font-medium">File Name</th>
               <th className="px-4 py-3 text-left font-medium">Type</th>
-              <th className="px-4 py-3 text-left font-medium">Project</th>
+              <th className="px-4 py-3 text-left font-medium">file_url</th>
               <th className="px-4 py-3 text-left font-medium">Upload Date</th>
               <th className="px-4 py-3 text-left font-medium">Size</th>
-              <th className="px-4 py-3 text-left font-medium">Actions</th>
+             
             </tr>
           </thead>
           <tbody>

@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import Sidebar from "../src/components/Sidebar";
 import Navbar from "../src/components/Navbar";
 import DocumentsTable from "../src/components/DocumentsTable";
-import AddNewDocumentModal from "../src/components/AddNewDocumentModal";
+import AddNewDocumentModel from "../src/components/AddNewDocumentModel";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
@@ -63,7 +63,7 @@ const Documents = () => {
       </div>
 
       {isModalOpen && (
-        <AddNewDocumentModal
+        <AddNewDocumentModel
           onClose={() => setIsModalOpen(false)}
           onDocumentAdded={handleDocumentAdded}
         />
