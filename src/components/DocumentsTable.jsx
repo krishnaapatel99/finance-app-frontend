@@ -1,7 +1,4 @@
-import { Eye, Trash2, FileText } from "lucide-react";
-import React from "react";
-
-export default function DocumentsTable({ documents }) {
+export default function DocumentsTable({ documents, onDelete }) {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-GB");
@@ -15,10 +12,10 @@ export default function DocumentsTable({ documents }) {
             <tr>
               <th className="px-4 py-3 text-left font-medium">File Name</th>
               <th className="px-4 py-3 text-left font-medium">Type</th>
-              <th className="px-4 py-3 text-left font-medium">file_url</th>
+              <th className="px-4 py-3 text-left font-medium">Project</th>
               <th className="px-4 py-3 text-left font-medium">Upload Date</th>
               <th className="px-4 py-3 text-left font-medium">Size</th>
-             
+              <th className="px-4 py-3 text-left font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -33,7 +30,10 @@ export default function DocumentsTable({ documents }) {
                 <td className="px-4 py-3">{d.size}</td>
                 <td className="px-4 py-3 flex gap-3">
                   <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" />
-                  <Trash2 className="cursor-pointer text-red-500 hover:text-red-700" />
+                  <Trash2
+                    className="cursor-pointer text-red-500 hover:text-red-700"
+                    onClick={() => onDelete(d.id)}
+                  />
                 </td>
               </tr>
             ))}
@@ -50,10 +50,7 @@ export default function DocumentsTable({ documents }) {
       {/* Mobile cards */}
       <div className="md:hidden space-y-4">
         {documents.map((d) => (
-          <div
-            key={d.id}
-            className="bg-white shadow-sm rounded-xl p-4 space-y-3 border"
-          >
+          <div key={d.id} className="bg-white shadow-sm rounded-xl p-4 space-y-3 border">
             <div className="flex justify-between items-center">
               <h3 className="font-semibold text-gray-800">{d.name}</h3>
               <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
@@ -66,7 +63,11 @@ export default function DocumentsTable({ documents }) {
             </p>
             <div className="flex justify-end gap-3 pt-2">
               <Eye size={16} className="cursor-pointer text-gray-600" />
-              <Trash2 size={16} className="cursor-pointer text-red-500" />
+              <Trash2
+                size={16}
+                className="cursor-pointer text-red-500"
+                onClick={() => onDelete(d.id)}
+              />
             </div>
           </div>
         ))}

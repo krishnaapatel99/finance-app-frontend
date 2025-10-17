@@ -31,7 +31,20 @@ const Documents = () => {
 
   const handleDocumentAdded = () => {
     fetchDocuments();
+   
   };
+   const deleteDocument = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this document?")) return;
+
+  try {
+    await axios.delete(`${API}/api/documents/${id}`);
+    // Refresh the list
+    fetchDocuments();
+  } catch (err) {
+    console.error("Error deleting document:", err);
+    alert("Failed to delete document.");
+  }
+};
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -57,7 +70,8 @@ const Documents = () => {
           {isLoading ? (
             <div className="text-center p-10 text-gray-500">Loading documents...</div>
           ) : (
-            <DocumentsTable documents={documents} />
+            <DocumentsTable documents={documents} onDelete={deleteDocument} />
+
           )}
         </main>
       </div>
