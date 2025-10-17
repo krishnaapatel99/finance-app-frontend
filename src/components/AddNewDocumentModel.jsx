@@ -15,7 +15,7 @@ const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get(`${API}/api/project`);
+        const res = await axios.get(`${API}/api/documents/add`);
         setProjects(res.data);
       } catch (err) {
         console.error("Error loading projects:", err);
