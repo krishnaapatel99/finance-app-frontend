@@ -60,7 +60,7 @@ export default function DocumentsTable({ documents, onDelete }) {
             </div>
             <p className="text-sm text-gray-500">Project: {d.project}</p>
             <p className="text-sm text-gray-600">
-              Uploaded: {formatDate(d.uploadDate)}
+              Uploaded: {formatDate(d.upload_date)}
             </p>
             <div className="flex justify-end gap-3 pt-2">
               <Eye size={16} className="cursor-pointer text-gray-600" />
