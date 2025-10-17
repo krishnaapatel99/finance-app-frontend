@@ -27,7 +27,7 @@ const Navbar = ({ toggleSidebar }) => {
                
             </div>
             <p className=" text-2xl font-extrabold text-black  ">
-                    Company Logo
+                    Company 
                 </p>
 
             {/* Profile Button */}
