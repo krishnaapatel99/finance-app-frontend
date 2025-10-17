@@ -28,7 +28,7 @@ export default function DocumentsTable({ documents, onDelete }) {
                 </td>
                 <td className="px-4 py-3">{d.type}</td>
                 <td className="px-4 py-3">{d.project}</td>
-                <td className="px-4 py-3">{formatDate(d.uploadDate)}</td>
+                <td className="px-4 py-3">{formatDate(d.upload_date)}</td>
                 <td className="px-4 py-3 flex gap-3">
                   <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" />
                   <Trash2
