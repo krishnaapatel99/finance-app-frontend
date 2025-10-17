@@ -1,3 +1,6 @@
+import { Eye, Trash2, FileText } from "lucide-react";
+import React from "react";
+
 export default function DocumentsTable({ documents, onDelete }) {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -14,7 +17,6 @@ export default function DocumentsTable({ documents, onDelete }) {
               <th className="px-4 py-3 text-left font-medium">Type</th>
               <th className="px-4 py-3 text-left font-medium">Project</th>
               <th className="px-4 py-3 text-left font-medium">Upload Date</th>
-              <th className="px-4 py-3 text-left font-medium">Size</th>
               <th className="px-4 py-3 text-left font-medium">Actions</th>
             </tr>
           </thead>
@@ -27,7 +29,6 @@ export default function DocumentsTable({ documents, onDelete }) {
                 <td className="px-4 py-3">{d.type}</td>
                 <td className="px-4 py-3">{d.project}</td>
                 <td className="px-4 py-3">{formatDate(d.uploadDate)}</td>
-                <td className="px-4 py-3">{d.size}</td>
                 <td className="px-4 py-3 flex gap-3">
                   <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" />
                   <Trash2
