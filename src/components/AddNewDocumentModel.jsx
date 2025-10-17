@@ -15,7 +15,7 @@ const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get(`${API}/api/documents/add`);
+        const res = await axios.get(`${API}/api/project`);
         setProjects(res.data);
       } catch (err) {
         console.error("Error loading projects:", err);
@@ -23,6 +23,7 @@ const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
     };
     fetchProjects();
   }, []);
+  
 
   const handleChange = (e) => {
     if (e.target.name === "file") {
