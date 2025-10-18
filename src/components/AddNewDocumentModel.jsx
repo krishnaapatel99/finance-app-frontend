@@ -6,7 +6,7 @@ const API = import.meta.env.VITE_BACKEND_URL;
 
 const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
   const [formData, setFormData] = useState({
-    file: null,
+    file_url: "",
     type: "",
     project: "",
   });
@@ -35,13 +35,13 @@ const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = new FormData();
-    form.append("file", formData.file);
-    form.append("type", formData.type);
-    form.append("project", formData.project);
-
+    
     try {
-      await axios.post(`${API}/api/documents/add`, form);
+      await axios.post(`${API}/api/documents/add`,  {
+      file_url: formData.file_url,
+      type: formData.type,
+      project: formData.project,
+    });
       alert("✅ Document uploaded successfully!");
       onDocumentAdded();
       onClose();
