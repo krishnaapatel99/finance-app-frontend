@@ -57,10 +57,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
                 <div className="flex flex-col gap-3 w-full px-3">
                    <Link  to="/"> <SidebarButton icon={LayoutDashboard} text="Dashboard" fromColor="blue-600" toColor="indigo-600" /></Link>
-                    <SidebarButton icon={DollarSign} text="Finance" fromColor="emerald-600" toColor="teal-600" />
                    <Link to="/project"> <SidebarButton icon={FolderKanban} text="Projects" fromColor="blue-500" toColor="sky-600" /></Link>
+                   <Link  to="/"> <SidebarButton icon={DollarSign} text="Finance" fromColor="blue-600" toColor="indigo-600" /></Link>
+                    <Link to="/document"> <SidebarButton icon={ChartColumn} text="Documents" fromColor="blue-500" toColor="sky-600" /></Link>
                     <SidebarButton icon={FileText} text="Reports" fromColor="orange-500" toColor="yellow-600" />
-                    <Link to="/document"> <SidebarButton icon={FolderKanban} text="Documents" fromColor="blue-500" toColor="sky-600" /></Link>
+                   
                     
                 </div>
             </div>
