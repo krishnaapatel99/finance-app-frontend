@@ -8,6 +8,7 @@ import ProjectsTable from "../src/components/ProjectsTable";
 import AddNewProjectModal from "../src/components/AddNewProjectModal"; // Your modal
 const API = import.meta.env.VITE_BACKEND_URL;
 const Projects = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [projects, setProjects] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +25,10 @@ const Projects = () => {
             setIsLoading(false);
         }
     };
+     const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
 
     // 1. Fetch data on component mount (initial load/refresh)
     useEffect(() => {
@@ -38,11 +43,11 @@ const Projects = () => {
     return (
         <div className="flex h-screen bg-gray-50">
            
-            <Sidebar /> 
+           <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
           
 
             <div className="flex-1 flex flex-col overflow-x-hidden">
-                    <Navbar />
+                   <Navbar toggleSidebar={toggleSidebar} />
 
                 <main className="flex-1 overflow-y-auto p-4 md:p-8">
                     <header className="flex justify-between items-center mb-8">

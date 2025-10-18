@@ -9,6 +9,7 @@ import AddNewDocumentModel from "../src/components/AddNewDocumentModel";
 const API = import.meta.env.VITE_BACKEND_URL;
 
 const Documents = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +25,10 @@ const Documents = () => {
       setIsLoading(false);
     }
   };
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
 
   useEffect(() => {
     fetchDocuments();
@@ -48,10 +53,10 @@ const Documents = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar />
+     <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div className="flex-1 flex flex-col overflow-x-hidden">
-        <Navbar />
+        <Navbar toggleSidebar={toggleSidebar} />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <header className="flex justify-between items-center mb-8">
