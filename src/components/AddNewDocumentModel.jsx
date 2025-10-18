@@ -115,9 +115,10 @@ const AddNewDocumentModel = ({ onClose, onDocumentAdded }) => {
                   required
                 >
                   <option value="">Select Type</option>
-                  <option value="Invoice">Invoice</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Receipt">Receipt</option>
+                  <option value="invoice">Invoice</option>
+                  <option value="contract">Contract</option>
+                  <option value="receipt">Receipt</option>
+                  <option value="other">Receipt</option>
                 </select>
               </div>
               <div>
