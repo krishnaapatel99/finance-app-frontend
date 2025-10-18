@@ -46,7 +46,7 @@ const StatCard = ({ title, value, change, up }) => {
             <div className="
                 bg-white/80 backdrop-blur-md border border-gray-100 
                 shadow-sm hover:shadow-md transition-all duration-200
-                rounded-2xl p-4 mb-2
+                rounded-2xl p-4 mb-2 text-center hover:-translate-y-1
             ">
                 <p className="text-gray-500 text-sm mb-1">Total Revenue</p>
                 {/* Use fetched data */}
