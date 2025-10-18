@@ -48,7 +48,7 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
       {/* Backdrop */}
       <motion.div
         onClick={handleBackdropClick}
-        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-md"
+        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-md overflow-y-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -63,7 +63,8 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl sm:max-w-sm mt-20 mx-4 relative backdrop-blur-xl bg-opacity-95 border border-white/40"
+           className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl sm:max-w-sm mt-10 mx-4 relative backdrop-blur-xl bg-opacity-95 border border-white/40 
+  max-h-[90vh] flex flex-col"
           initial={{ y: -60, opacity: 0, scale: 0.95 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: -40, opacity: 0, scale: 0.95 }}
@@ -86,7 +87,7 @@ const AddNewProjectModal = ({ onClose, onProjectAdded }) => {
           </header>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          <form onSubmit={handleSubmit} className="p-4 space-y-5 overflow-y-auto flex-1 ">
             {/* Use single-column on small screens and 2-column on larger screens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
