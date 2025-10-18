@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Plus, Stamp } from "lucide-react";
-import FinanceTable from "../components/FinanceTable";
-import AddIncomeModal from "../components/AddIncomeModal";
+import { Plus } from "lucide-react";
+import FinanceTable from "../src/components/FinanceTable";
+import AddIncomeModal from "../src/components/AddIncomeModal";
 import StatCard from "../src/components/StatCard";
 
 const API = import.meta.env.VITE_BACKEND_URL;
