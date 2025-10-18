@@ -35,7 +35,8 @@ export default function DocumentsTable({ documents, onDelete }) {
                 <td className="px-4 py-3">{d.project}</td>
                 <td className="px-4 py-3">{formatDate(d.upload_date)}</td>
                 <td className="px-4 py-3 flex gap-3">
-                  <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" />
+                  <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" 
+                   onClick={() => handleView(d.file_url)}/>
                   <Trash2
                     className="cursor-pointer text-red-500 hover:text-red-700"
                     onClick={() => onDelete(d.id)}
@@ -68,7 +69,9 @@ export default function DocumentsTable({ documents, onDelete }) {
               Uploaded: {formatDate(d.upload_date)}
             </p>
             <div className="flex justify-end gap-3 pt-2">
-              <Eye size={16} className="cursor-pointer text-gray-600" />
+              <Eye size={16} 
+              className="cursor-pointer text-gray-600"
+               onClick={() => handleView(d.file_url)} />
               <Trash2
                 size={16}
                 className="cursor-pointer text-red-500"
