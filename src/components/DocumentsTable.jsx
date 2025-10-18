@@ -7,6 +7,11 @@ export default function DocumentsTable({ documents, onDelete }) {
     return new Date(dateString).toLocaleDateString("en-GB");
   };
 
+  const handleView = (url) => {
+    if (!url) return alert("❌ No file link found for this document");
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="p-4 md:p-6">
       <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-x-auto">
