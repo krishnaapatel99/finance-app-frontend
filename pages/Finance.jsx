@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import StatCard from "../components/StatCard";
-import FinanceTable from "../components/FinanceTable";
-import AddIncomeModal from "../components/AddIncomeModal";
+import Sidebar from "../src/components/Sidebar";
+import Navbar from "../src/components/Navbar";
+import StatCard from "../src/components/StatCard";
+import FinanceTable from "../src/components/FinanceTable";
+import AddIncomeModal from "../src/components/AddIncomeModal";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
