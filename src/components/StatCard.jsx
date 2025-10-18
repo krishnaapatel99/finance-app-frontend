@@ -4,9 +4,9 @@ const API = import.meta.env.VITE_BACKEND_URL;
 // Helper to format currency
 const formatCurrency = (amount) => {
     // COALESCE returns a string from the DB, so we parse it first.
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'INR',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
     }).format(parseFloat(amount));
