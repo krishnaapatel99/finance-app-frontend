@@ -63,14 +63,27 @@ export default function Finance() {
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           {/* Header */}
-          <header className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
-              Finance
-            </h1>
-            <p className="text-gray-500 mt-1">
-              Track income and expenses across all projects
-            </p>
-          </header>
+          {/* Header */}
+{/* Header */}
+<header className="flex  sm:flex-row sm:items-center sm:justify-between mb-8">
+  <div>
+    <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
+      Finance Overview
+    </h1>
+    <p className="text-gray-500 mt-1">
+      Track income and expenses across all projects
+    </p>
+  </div>
+
+  <button
+    onClick={() => setIsModalOpen(true)}
+    className="flex items-center h-14 gap-2 mt-4 sm:mt-0 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
+  >
+    <Plus size={18} /> Add {activeTab === "income" ? "Income" : "Expense"}
+  </button>
+</header>
+
+
 
           {/* Summary Cards */}
           <StatCard totalIncome={totalIncome} totalExpenses={totalExpenses} netProfit={netProfit} />
@@ -128,14 +141,7 @@ export default function Finance() {
           )}
 
           {/* Add Income Button */}
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition"
-            >
-              <Plus size={18} /> Add {activeTab === "income" ? "Income" : "Expense"}
-            </button>
-          </div>
+         
 
           {/* Add Income Modal */}
           {isModalOpen && (
