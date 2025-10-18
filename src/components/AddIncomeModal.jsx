@@ -1,125 +1,190 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
-export default function AddIncomeModal({ onClose, onAdded, projects, activeTab }) {
+export default function AddIncomeModal({
+  onClose,
+  onIncomeAdded,
+  projects,
+  activeTab, // "income" or "expense"
+}) {
   const [formData, setFormData] = useState({
     project_id: "",
     client_name: "",
     amount: "",
     date_received: "",
-    payment_mode: "",
+    payment_mode: "Bank Transfer",
     notes: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const endpoint =
-        activeTab === "income"
-          ? `${API}/api/finance/income/add`
-          : `${API}/api/finance/expense/add`;
+    // --- Basic Validation ---
+    if (!formData.project_id) return alert("Please select a project.");
+    if (!formData.client_name) return alert("Please enter client name.");
+    if (!formData.amount || Number(formData.amount) <= 0)
+      return alert("Please enter a valid amount.");
+    if (!formData.date_received) return alert("Please select a date.");
 
-      await axios.post(endpoint, formData);
-      onAdded();
-      onClose();
+    const endpoint =
+      activeTab === "expense"
+        ? `${API}/api/finance/expense/add`
+        : `${API}/api/finance/income/add`;
+
+    console.log("Submitting to:", endpoint);
+    console.log("Form Data:", formData);
+
+    try {
+      setLoading(true);
+      const res = await axios.post(endpoint, formData);
+      console.log("Response:", res.data);
+
+      if (res.status === 201 || res.status === 200) {
+        alert(`${activeTab === "expense" ? "Expense" : "Income"} added successfully!`);
+        onIncomeAdded(); // Refresh table
+        onClose();
+      } else {
+        alert("Failed to add. Check console for details.");
+      }
     } catch (err) {
-      console.error("Error submitting form:", err);
-      alert(`Failed to add ${activeTab}.`);
+      console.error("Error adding data:", err.response || err);
+      alert(
+        `Failed to add ${activeTab === "expense" ? "expense" : "income"}.\n` +
+          (err.response?.data?.message || err.message)
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-semibold mb-4 text-gray-700">
-          Add {activeTab === "income" ? "Income" : "Expense"}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <select
-            name="project_id"
-            value={formData.project_id}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg p-2"
-          >
-            <option value="">Select Project</option>
-            {projects.map((p) => (
-              <option key={p.project_id} value={p.project_id}>
-                {p.projectName}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="text"
-            name="client_name"
-            placeholder="Client Name"
-            value={formData.client_name}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg p-2"
-          />
-
-          <input
-            type="number"
-            name="amount"
-            placeholder="Amount"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg p-2"
-          />
-
-          <input
-            type="date"
-            name="date_received"
-            value={formData.date_received}
-            onChange={handleChange}
-            required
-            className="w-full border rounded-lg p-2"
-          />
-
-          <input
-            type="text"
-            name="payment_mode"
-            placeholder="Payment Mode (e.g. Cash, Bank)"
-            value={formData.payment_mode}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-          />
-
-          <textarea
-            name="notes"
-            placeholder="Notes"
-            value={formData.notes}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-2"
-          />
-
-          <div className="flex justify-end gap-3">
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 overflow-y-auto max-h-[90vh]"
+          initial={{ scale: 0.9, opacity: 0, y: -40 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: -40 }}
+          transition={{ type: "spring", stiffness: 160, damping: 18 }}
+        >
+          {/* Title */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-800">
+              {activeTab === "expense" ? "Add Expense" : "Add Income"}
+            </h2>
             <button
-              type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg border hover:bg-gray-100"
+              className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-            >
-              Add {activeTab === "income" ? "Income" : "Expense"}
+              &times;
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <select
+              name="project_id"
+              value={formData.project_id}
+              onChange={(e) =>
+                setFormData({ ...formData, project_id: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              required
+            >
+              <option value="">Select Project</option>
+              {projects.map((p) => (
+                <option key={p.project_id} value={p.project_id}>
+                  {p.projectname}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="text"
+              placeholder="Client Name"
+              value={formData.client_name}
+              onChange={(e) =>
+                setFormData({ ...formData, client_name: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              required
+            />
+
+            <input
+              type="number"
+              placeholder="Amount"
+              value={formData.amount}
+              onChange={(e) =>
+                setFormData({ ...formData, amount: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              required
+            />
+
+            <input
+              type="date"
+              value={formData.date_received}
+              onChange={(e) =>
+                setFormData({ ...formData, date_received: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              required
+            />
+
+            <select
+              value={formData.payment_mode}
+              onChange={(e) =>
+                setFormData({ ...formData, payment_mode: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+            >
+              <option>Bank Transfer</option>
+              <option>Cash</option>
+              <option>Cheque</option>
+            </select>
+
+            <textarea
+              placeholder="Notes (optional)"
+              value={formData.notes}
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+            ></textarea>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition-all duration-150"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={`px-5 py-2 text-white rounded-lg shadow-md transition-all duration-150 ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+                disabled={loading}
+              >
+                {activeTab === "expense" ? "Add Expense" : "Add Income"}
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
