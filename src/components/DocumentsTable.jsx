@@ -1,7 +1,9 @@
 import { Eye, Trash2, FileText } from "lucide-react";
 import React from "react";
 
-export default function DocumentsTable({ documents, onDelete }) {
+export default function DocumentsTable({ documents, onDelete, selectedProject }) {
+  const filteredData = selectedProject === "All Projects" ? documents : documents.filter(d => d.project === selectedProject);
+ 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-GB");
@@ -26,7 +28,7 @@ export default function DocumentsTable({ documents, onDelete }) {
             </tr>
           </thead>
           <tbody>
-            {documents.map((d) => (
+            {filteredData.map((d) => (
               <tr key={d.id} className="border-t hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-gray-500" /> {d.name}

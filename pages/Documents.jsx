@@ -13,8 +13,17 @@ const Documents = () => {
   const [documents, setDocuments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("All Projects");
 
+   useEffect(() => {
+    fetchProjects();
+    fetchDocuments(); 
+    
+  }, []);
   const fetchDocuments = async () => {
+
+
     setIsLoading(true);
     try {
       const res = await axios.get(`${API}/api/documents`);
@@ -23,6 +32,18 @@ const Documents = () => {
       console.error("Error fetching documents:", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+  const fetchProjects = async () => {
+    try {
+      const res = await axios.get(`${API}/api/project`);
+      const normalized = res.data.map(p => ({
+        ...p,
+        projectName: p.projectName || p.projectname || "Unknown",
+      }));
+      setProjects(normalized);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -72,10 +93,38 @@ const Documents = () => {
             </button>
           </header>
 
+           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+            <div className="flex items-center gap-2 ">
+              <span className="text-gray-600 font-medium">Filter by :</span>
+              <select
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+                className="border rounded-lg px-2 py-2 focus:ring-2 focus:ring-blue-500"
+              >
+                <option>All Projects</option>
+                {projects.map((p) => (
+                  <option key={p.project_id} value={p.projectName}>{p.projectName}</option>
+                ))}
+              </select>
+
+              <select
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+                className="border rounded-lg px-2 py-2 focus:ring-2 focus:ring-blue-500"
+              >
+                <option>All Types</option>
+                {projects.map((p) => (
+                  <option key={p.project_id} value={p.projectName}>{p.projectName}</option>
+                ))}
+              </select>
+            </div>
+            
+          </div>
+
           {isLoading ? (
             <div className="text-center p-10 text-gray-500">Loading documents...</div>
           ) : (
-            <DocumentsTable documents={documents} onDelete={deleteDocument} />
+            <DocumentsTable documents={documents} onDelete={deleteDocument} selectedProject={selectedProject}/>
 
           )}
         </main>
