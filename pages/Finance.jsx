@@ -10,7 +10,7 @@ import AddIncomeModal from "../src/components/AddIncomeModal";
 const API = import.meta.env.VITE_BACKEND_URL;
 
 export default function Finance() {
-  const [isSidebarOpen, setIsSidbarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -19,20 +19,19 @@ export default function Finance() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const toggleSidebar = () => setIsSidbarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
     fetchProjects();
-    fetchFinanceData("income");
-    fetchFinanceData("expense");
+    fetchFinanceData();
   }, []);
 
-  const fetchFinanceData = async (tab) => {
+  const fetchFinanceData = async () => {
     try {
-      if (tab === "income" || tab === "expense") setIsLoading(true);
+      setIsLoading(true);
       const res = await axios.get(`${API}/api/finance`);
-      if (tab === "income") setIncomes(res.data.income || []);
-      if (tab === "expense") setExpenses(res.data.expense || []);
+      setIncomes(res.data.income || []);
+      setExpenses(res.data.expense || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -43,7 +42,12 @@ export default function Finance() {
   const fetchProjects = async () => {
     try {
       const res = await axios.get(`${API}/api/project`);
-      setProjects(res.data || []);
+      // normalize projectName casing
+      const normalized = res.data.map(p => ({
+        ...p,
+        projectName: p.projectName || p.projectname || "Unknown"
+      }));
+      setProjects(normalized);
     } catch (err) {
       console.error(err);
     }
@@ -54,30 +58,31 @@ export default function Finance() {
   const netProfit = totalIncome - totalExpenses;
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar isOpen={setIsSidbarOpen} toggleSidebar={toggleSidebar} />
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="flex-1 flex flex-col overflow-x-hidden">
         <Navbar toggleSidebar={toggleSidebar} />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           {/* Header */}
-          <header className="flex sm:flex-row sm:items-center sm:justify-between mb-8">
+          <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-slate-800">Finance Overview</h1>
               <p className="text-gray-500 mt-1">Track income and expenses across all projects</p>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center h-14 gap-2 mt-4 sm:mt-0 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
+              className="flex items-center h-14 gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
             >
               <Plus size={18} /> Add {activeTab === "income" ? "Income" : "Expense"}
             </button>
           </header>
 
+          {/* Stats */}
           <StatCard totalIncome={totalIncome} totalExpenses={totalExpenses} netProfit={netProfit} />
 
-          {/* Tabs */}
+          {/* Filters & Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-gray-600 font-medium">Filter by Project:</span>
               <select
                 value={selectedProject}
@@ -86,10 +91,13 @@ export default function Finance() {
               >
                 <option>All Projects</option>
                 {projects.map((p) => (
-                  <option key={p.project_id}>{p.projectName}</option>
+                  <option key={p.project_id} value={p.projectName}>
+                    {p.projectName}
+                  </option>
                 ))}
               </select>
             </div>
+
             <div className="flex bg-gray-100 rounded-lg p-1 w-fit">
               <button
                 onClick={() => setActiveTab("income")}
@@ -127,7 +135,7 @@ export default function Finance() {
           {isModalOpen && (
             <AddIncomeModal
               onClose={() => setIsModalOpen(false)}
-              onIncomeAdded={(tab) => fetchFinanceData(tab)}
+              onIncomeAdded={(tab) => fetchFinanceData()}
               projects={projects}
               activeTab={activeTab}
             />
