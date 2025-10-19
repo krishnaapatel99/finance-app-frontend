@@ -10,7 +10,7 @@ import AddIncomeModal from "../src/components/AddIncomeModal";
 const API = import.meta.env.VITE_BACKEND_URL;
 
 export default function Finance() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidbarOpen] = useState(false);
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -19,7 +19,7 @@ export default function Finance() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidbarOpen(!isSidebarOpen);
 
   useEffect(() => {
     fetchProjects();
@@ -55,7 +55,7 @@ export default function Finance() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={setIsSidbarOpen} toggleSidebar={toggleSidebar} />
       <div className="flex-1 flex flex-col overflow-x-hidden">
         <Navbar toggleSidebar={toggleSidebar} />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
