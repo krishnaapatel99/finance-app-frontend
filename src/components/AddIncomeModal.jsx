@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,66 +10,60 @@ export default function AddIncomeModal({
   projects,
   activeTab, // "income" or "expense"
 }) {
-  const [formData, setFormData] = useState({
+  const initialForm = {
     project_id: "",
     client_name: "",
     amount: "",
     date_received: "",
     payment_mode: "Bank Transfer",
     notes: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
 
+  // Reset form whenever the activeTab changes
+  useEffect(() => {
+    setFormData(initialForm);
+  }, [activeTab]);
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  console.log("=== Submitting Form ===");
-  console.log("Active Tab:", activeTab);
-  console.log("Form Data BEFORE conversion:", formData);
+    if (!formData.project_id) return alert("Please select a project.");
+    if (!formData.client_name) return alert("Please enter client name.");
+    if (!formData.amount || Number(formData.amount) <= 0)
+      return alert("Please enter a valid amount.");
+    if (!formData.date_received) return alert("Please select a date.");
 
-  // --- Basic Validation ---
-  if (!formData.project_id) return alert("Please select a project.");
-  if (!formData.client_name) return alert("Please enter client name.");
-  if (!formData.amount || Number(formData.amount) <= 0)
-    return alert("Please enter a valid amount.");
-  if (!formData.date_received) return alert("Please select a date.");
+    const endpoint =
+      activeTab === "expense"
+        ? `${API}/api/finance/expense/add`
+        : `${API}/api/finance/income/add`;
 
-  const endpoint =
-    activeTab === "expense"
-      ? `${API}/api/finance/expense/add`
-      : `${API}/api/finance/income/add`;
+    const payload = { ...formData, amount: Number(formData.amount) };
 
-  // Convert amount to number
-  const payload = { ...formData, amount: Number(formData.amount) };
+    try {
+      setLoading(true);
+      const res = await axios.post(endpoint, payload);
 
-  console.log("Endpoint:", endpoint);
-  console.log("Payload (converted amount):", payload);
-
-  try {
-    setLoading(true);
-    const res = await axios.post(endpoint, payload);
-    console.log("Response status:", res.status);
-    console.log("Response data:", res.data);
-
-    if (res.status === 201 || res.status === 200) {
-      alert(`${activeTab === "expense" ? "Expense" : "Income"} added successfully!`);
-      onIncomeAdded();
-      onClose();
-    } else {
-      alert("Failed to add. Check console for details.");
+      if (res.status === 201 || res.status === 200) {
+        alert(`${activeTab === "expense" ? "Expense" : "Income"} added successfully!`);
+        onIncomeAdded(activeTab); // pass tab type to refresh correct table
+        onClose();
+      } else {
+        alert("Failed to add. Check console for details.");
+      }
+    } catch (err) {
+      console.error("Error adding data:", err.response || err);
+      alert(
+        `Failed to add ${activeTab === "expense" ? "expense" : "income"}.\n` +
+          (err.response?.data?.message || err.message)
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Error adding data:", err.response || err);
-    alert(
-      `Failed to add ${activeTab === "expense" ? "expense" : "income"}.\n` +
-        (err.response?.data?.message || err.message)
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <AnimatePresence>
@@ -86,7 +80,6 @@ export default function AddIncomeModal({
           exit={{ scale: 0.9, opacity: 0, y: -40 }}
           transition={{ type: "spring", stiffness: 160, damping: 18 }}
         >
-          {/* Title */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">
               {activeTab === "expense" ? "Add Expense" : "Add Income"}
@@ -99,7 +92,6 @@ export default function AddIncomeModal({
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <select
               name="project_id"
