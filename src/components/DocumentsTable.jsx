@@ -1,9 +1,13 @@
 import { Eye, Trash2, FileText } from "lucide-react";
 import React from "react";
 
-export default function DocumentsTable({ documents, onDelete, selectedProject }) {
-  const filteredData = selectedProject === "All Projects" ? documents : documents.filter(d => d.project === selectedProject);
- 
+export default function DocumentsTable({ documents, onDelete, selectedProject, selectedType }) {
+
+  // Filter by project and type
+  const filteredData = documents
+    .filter(d => selectedProject === "All Projects" || d.project === selectedProject)
+    .filter(d => selectedType === "All Types" || d.type === selectedType);
+
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-GB");
@@ -16,6 +20,7 @@ export default function DocumentsTable({ documents, onDelete, selectedProject })
 
   return (
     <div className="p-4 md:p-6">
+      {/* Desktop Table */}
       <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-x-auto">
         <table className="w-full text-sm text-gray-700">
           <thead className="bg-gray-50">
@@ -37,8 +42,10 @@ export default function DocumentsTable({ documents, onDelete, selectedProject })
                 <td className="px-4 py-3">{d.project}</td>
                 <td className="px-4 py-3">{formatDate(d.upload_date)}</td>
                 <td className="px-4 py-3 flex gap-3">
-                  <Eye className="cursor-pointer text-gray-600 hover:text-blue-600" 
-                   onClick={() => handleView(d.file_url)}/>
+                  <Eye
+                    className="cursor-pointer text-gray-600 hover:text-blue-600"
+                    onClick={() => handleView(d.file_url)}
+                  />
                   <Trash2
                     className="cursor-pointer text-red-500 hover:text-red-700"
                     onClick={() => onDelete(d.id)}
@@ -49,16 +56,16 @@ export default function DocumentsTable({ documents, onDelete, selectedProject })
           </tbody>
         </table>
 
-        {documents.length === 0 && (
+        {filteredData.length === 0 && (
           <div className="p-4 text-center text-gray-500">
-            No documents found. Upload one!
+            No documents found.
           </div>
         )}
       </div>
 
-      {/* Mobile cards */}
+      {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
-        {documents.map((d) => (
+        {filteredData.map((d) => (
           <div key={d.id} className="bg-white shadow-sm rounded-xl p-4 space-y-3 border">
             <div className="flex justify-between items-center">
               <h3 className="font-semibold text-gray-800">{d.name}</h3>
@@ -67,18 +74,10 @@ export default function DocumentsTable({ documents, onDelete, selectedProject })
               </span>
             </div>
             <p className="text-sm text-gray-500">Project: {d.project}</p>
-            <p className="text-sm text-gray-600">
-              Uploaded: {formatDate(d.upload_date)}
-            </p>
+            <p className="text-sm text-gray-600">Uploaded: {formatDate(d.upload_date)}</p>
             <div className="flex justify-end gap-3 pt-2">
-              <Eye size={16} 
-              className="cursor-pointer text-gray-600"
-               onClick={() => handleView(d.file_url)} />
-              <Trash2
-                size={16}
-                className="cursor-pointer text-red-500"
-                onClick={() => onDelete(d.id)}
-              />
+              <Eye size={16} className="cursor-pointer text-gray-600" onClick={() => handleView(d.file_url)} />
+              <Trash2 size={16} className="cursor-pointer text-red-500" onClick={() => onDelete(d.id)} />
             </div>
           </div>
         ))}
