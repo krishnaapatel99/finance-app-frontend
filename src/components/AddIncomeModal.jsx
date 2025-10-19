@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
-export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activeTab }) {
+export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activeTab, editingRecord }) {
   const initialForm = {
     project_id: "",
     client_name: "",
@@ -17,44 +17,49 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
 
-  // Reset form whenever activeTab changes
+  // Prefill form for editing
   useEffect(() => {
-    setFormData(initialForm);
-  }, [activeTab]);
+    if (editingRecord) {
+      setFormData({
+        project_id: editingRecord.project_id,
+        client_name: editingRecord.client_name,
+        amount: editingRecord.amount,
+        date_received: editingRecord.date_received.split("T")[0],
+        payment_mode: editingRecord.payment_mode,
+        notes: editingRecord.notes || "",
+      });
+    } else {
+      setFormData(initialForm);
+    }
+  }, [editingRecord]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.project_id) return alert("Please select a project.");
-    if (!formData.client_name) return alert("Please enter client name.");
-    if (!formData.amount || Number(formData.amount) <= 0)
-      return alert("Please enter a valid amount.");
-    if (!formData.date_received) return alert("Please select a date.");
-
-    const endpoint =
-      activeTab === "expense"
-        ? `${API}/api/finance/expense/add`
-        : `${API}/api/finance/income/add`;
+    if (!formData.project_id || !formData.client_name || !formData.amount || !formData.date_received) {
+      return alert("Please fill all required fields");
+    }
 
     const payload = { ...formData, amount: Number(formData.amount) };
+    const endpoint = editingRecord
+      ? `${API}/api/finance/update/${editingRecord.finance_id}`
+      : activeTab === "expense"
+      ? `${API}/api/finance/expense/add`
+      : `${API}/api/finance/income/add`;
 
     try {
       setLoading(true);
-      const res = await axios.post(endpoint, payload);
-
-      if (res.status === 201 || res.status === 200) {
-        alert(`${activeTab === "expense" ? "Expense" : "Income"} added successfully!`);
-        onIncomeAdded(activeTab); // refresh correct table
-        onClose();
+      if (editingRecord) {
+        await axios.put(endpoint, payload);
+        alert(`${activeTab} updated successfully!`);
       } else {
-        alert("Failed to add. Check console for details.");
+        await axios.post(endpoint, payload);
+        alert(`${activeTab} added successfully!`);
       }
+      onIncomeAdded();
+      onClose();
     } catch (err) {
-      console.error("Error adding data:", err.response || err);
-      alert(
-        `Failed to add ${activeTab === "expense" ? "expense" : "income"}.\n` +
-          (err.response?.data?.message || err.message)
-      );
+      console.error("Error:", err.response || err);
+      alert("Operation failed. Check console.");
     } finally {
       setLoading(false);
     }
@@ -67,6 +72,7 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
           className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 overflow-y-auto max-h-[90vh]"
@@ -77,29 +83,20 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800">
-              {activeTab === "expense" ? "Add Expense" : "Add Income"}
+              {editingRecord ? `Edit ${activeTab}` : `Add ${activeTab}`}
             </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
-            >
-              &times;
-            </button>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <select
               value={formData.project_id}
               onChange={(e) => setFormData({ ...formData, project_id: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             >
               <option value="">Select Project</option>
-              {projects.map((p) => (
-                <option key={p.project_id} value={p.project_id}>
-                  {p.projectName}
-                </option>
-              ))}
+              {projects.map((p) => <option key={p.project_id} value={p.project_id}>{p.projectName}</option>)}
             </select>
 
             <input
@@ -107,7 +104,7 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
               placeholder="Client Name"
               value={formData.client_name}
               onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             />
 
@@ -116,7 +113,7 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
               placeholder="Amount"
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             />
 
@@ -124,14 +121,14 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
               type="date"
               value={formData.date_received}
               onChange={(e) => setFormData({ ...formData, date_received: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               required
             />
 
             <select
               value={formData.payment_mode}
               onChange={(e) => setFormData({ ...formData, payment_mode: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option>Bank Transfer</option>
               <option>Cash</option>
@@ -142,25 +139,17 @@ export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activ
               placeholder="Notes (optional)"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
             ></textarea>
 
             <div className="flex justify-end gap-3 mt-6">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition-all duration-150"
-              >
-                Cancel
-              </button>
+              <button type="button" onClick={onClose} className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Cancel</button>
               <button
                 type="submit"
-                className={`px-5 py-2 text-white rounded-lg shadow-md transition-all duration-150 ${
-                  loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                }`}
+                className={`px-5 py-2 text-white rounded-lg shadow-md ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
                 disabled={loading}
               >
-                {activeTab === "expense" ? "Add Expense" : "Add Income"}
+                {editingRecord ? "Update" : `Add ${activeTab}`}
               </button>
             </div>
           </form>
