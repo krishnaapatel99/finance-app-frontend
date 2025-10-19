@@ -91,16 +91,7 @@ function Dashboard() {
                 </div>
                 
                 {/* Floating Action Button (FAB) */}
-                <button className="
-                    fixed bottom-4 right-4 
-                    bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700
-                    text-white 
-                    h-12 w-12 rounded-full flex items-center justify-center 
-                    shadow-2xl hover:shadow-3xl transition-all duration-200 z-50
-                    touch-manipulation 
-                ">
-                    <Plus size={30} />
-                </button>
+                
             </main>
         </div>
     </div>
