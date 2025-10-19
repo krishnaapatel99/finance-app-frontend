@@ -16,6 +16,7 @@ const Documents = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("All Projects");
   const [selectedType, setSelectedType] = useState("All Types");
+  const [documentTypes, setDocumentTypes] = useState(["All Types"]);
 
   // Fetch documents
   const fetchDocuments = async () => {
@@ -44,6 +45,12 @@ const Documents = () => {
     }
   };
 
+  // Update document types after fetching documents
+  useEffect(() => {
+    const types = ["All Types", ...new Set(documents.map(d => d.type))];
+    setDocumentTypes(types);
+  }, [documents]);
+
   useEffect(() => {
     fetchProjects();
     fetchDocuments();
@@ -63,9 +70,6 @@ const Documents = () => {
       alert("Failed to delete document.");
     }
   };
-
-  // Unique types for type filter
-  const documentTypes = ["All Types", ...new Set(documents.map(d => d.type))];
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -90,7 +94,7 @@ const Documents = () => {
             <div className="flex items-center gap-2">
               <span className="text-gray-600 font-medium">Filter by:</span>
 
-              {/* Project filter (already implemented) */}
+              {/* Project filter */}
               <select
                 value={selectedProject}
                 onChange={(e) => setSelectedProject(e.target.value)}
