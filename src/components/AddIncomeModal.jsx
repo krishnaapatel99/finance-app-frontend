@@ -35,7 +35,8 @@ export default function AddIncomeModal({
       activeTab === "expense"
         ? `${API}/api/finance/expense/add`
         : `${API}/api/finance/income/add`;
-
+  
+console.log("Endpoint:", endpoint);
     console.log("Submitting to:", endpoint);
     console.log("Form Data:", formData);
 
