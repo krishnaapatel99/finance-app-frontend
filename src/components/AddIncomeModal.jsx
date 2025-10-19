@@ -4,12 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
-export default function AddIncomeModal({
-  onClose,
-  onIncomeAdded,
-  projects,
-  activeTab, // "income" or "expense"
-}) {
+export default function AddIncomeModal({ onClose, onIncomeAdded, projects, activeTab }) {
   const initialForm = {
     project_id: "",
     client_name: "",
@@ -22,7 +17,7 @@ export default function AddIncomeModal({
   const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
 
-  // Reset form whenever the activeTab changes
+  // Reset form whenever activeTab changes
   useEffect(() => {
     setFormData(initialForm);
   }, [activeTab]);
@@ -49,7 +44,7 @@ export default function AddIncomeModal({
 
       if (res.status === 201 || res.status === 200) {
         alert(`${activeTab === "expense" ? "Expense" : "Income"} added successfully!`);
-        onIncomeAdded(activeTab); // pass tab type to refresh correct table
+        onIncomeAdded(activeTab); // refresh correct table
         onClose();
       } else {
         alert("Failed to add. Check console for details.");
@@ -94,18 +89,15 @@ export default function AddIncomeModal({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <select
-              name="project_id"
               value={formData.project_id}
-              onChange={(e) =>
-                setFormData({ ...formData, project_id: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, project_id: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
               required
             >
               <option value="">Select Project</option>
               {projects.map((p) => (
                 <option key={p.project_id} value={p.project_id}>
-                  {p.projectname}
+                  {p.projectName}
                 </option>
               ))}
             </select>
@@ -114,9 +106,7 @@ export default function AddIncomeModal({
               type="text"
               placeholder="Client Name"
               value={formData.client_name}
-              onChange={(e) =>
-                setFormData({ ...formData, client_name: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
               required
             />
@@ -125,9 +115,7 @@ export default function AddIncomeModal({
               type="number"
               placeholder="Amount"
               value={formData.amount}
-              onChange={(e) =>
-                setFormData({ ...formData, amount: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
               required
             />
@@ -135,18 +123,14 @@ export default function AddIncomeModal({
             <input
               type="date"
               value={formData.date_received}
-              onChange={(e) =>
-                setFormData({ ...formData, date_received: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, date_received: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
               required
             />
 
             <select
               value={formData.payment_mode}
-              onChange={(e) =>
-                setFormData({ ...formData, payment_mode: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, payment_mode: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
             >
               <option>Bank Transfer</option>
@@ -157,9 +141,7 @@ export default function AddIncomeModal({
             <textarea
               placeholder="Notes (optional)"
               value={formData.notes}
-              onChange={(e) =>
-                setFormData({ ...formData, notes: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-150"
             ></textarea>
 
@@ -174,9 +156,7 @@ export default function AddIncomeModal({
               <button
                 type="submit"
                 className={`px-5 py-2 text-white rounded-lg shadow-md transition-all duration-150 ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
+                  loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
                 }`}
                 disabled={loading}
               >

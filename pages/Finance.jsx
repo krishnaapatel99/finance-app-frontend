@@ -15,23 +15,24 @@ export default function Finance() {
   const [expenses, setExpenses] = useState([]);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("All Projects");
-  const [activeTab, setActiveTab] = useState("income");
+  const [activeTab, setActiveTab] = useState("income"); // "income" or "expense"
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
-    fetchFinanceData();
     fetchProjects();
+    fetchFinanceData("income");
+    fetchFinanceData("expense");
   }, []);
 
-  const fetchFinanceData = async () => {
+  const fetchFinanceData = async (tab) => {
     try {
-      setIsLoading(true);
+      if (tab === "income" || tab === "expense") setIsLoading(true);
       const res = await axios.get(`${API}/api/finance`);
-      setIncomes(res.data.income || []);
-      setExpenses(res.data.expense || []);
+      if (tab === "income") setIncomes(res.data.income || []);
+      if (tab === "expense") setExpenses(res.data.expense || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -42,14 +43,14 @@ export default function Finance() {
   const fetchProjects = async () => {
     try {
       const res = await axios.get(`${API}/api/project`);
-      setProjects(res.data);
+      setProjects(res.data || []);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const totalIncome = incomes.reduce((sum, i) => sum + Number(i.amount || 0), 0);
-  const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  const totalIncome = incomes.reduce((acc, i) => acc + Number(i.amount), 0);
+  const totalExpenses = expenses.reduce((acc, i) => acc + Number(i.amount), 0);
   const netProfit = totalIncome - totalExpenses;
 
   return (
@@ -58,6 +59,7 @@ export default function Finance() {
       <div className="flex-1 flex flex-col overflow-x-hidden">
         <Navbar toggleSidebar={toggleSidebar} />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          {/* Header */}
           <header className="flex sm:flex-row sm:items-center sm:justify-between mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-slate-800">Finance Overview</h1>
@@ -73,6 +75,7 @@ export default function Finance() {
 
           <StatCard totalIncome={totalIncome} totalExpenses={totalExpenses} netProfit={netProfit} />
 
+          {/* Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
             <div className="flex items-center gap-2">
               <span className="text-gray-600 font-medium">Filter by Project:</span>
@@ -83,7 +86,7 @@ export default function Finance() {
               >
                 <option>All Projects</option>
                 {projects.map((p) => (
-                  <option key={p.project_id}>{p.projectname}</option>
+                  <option key={p.project_id}>{p.projectName}</option>
                 ))}
               </select>
             </div>
@@ -91,26 +94,23 @@ export default function Finance() {
               <button
                 onClick={() => setActiveTab("income")}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  activeTab === "income"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-600 hover:text-blue-500"
+                  activeTab === "income" ? "bg-white shadow-sm text-blue-600" : "text-gray-600 hover:text-blue-500"
                 }`}
               >
                 Income
               </button>
               <button
-                onClick={() => setActiveTab("expenses")}
+                onClick={() => setActiveTab("expense")}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  activeTab === "expenses"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-600 hover:text-blue-500"
+                  activeTab === "expense" ? "bg-white shadow-sm text-blue-600" : "text-gray-600 hover:text-blue-500"
                 }`}
               >
-                Expenses
+                Expense
               </button>
             </div>
           </div>
 
+          {/* Table */}
           {isLoading ? (
             <div className="text-center p-8 text-gray-500">Loading records...</div>
           ) : (
@@ -118,13 +118,16 @@ export default function Finance() {
               data={activeTab === "income" ? incomes : expenses}
               activeTab={activeTab}
               selectedProject={selectedProject}
+              onEdit={() => {}}
+              onDelete={() => {}}
             />
           )}
 
+          {/* Modal */}
           {isModalOpen && (
             <AddIncomeModal
               onClose={() => setIsModalOpen(false)}
-              onIncomeAdded={fetchFinanceData}
+              onIncomeAdded={(tab) => fetchFinanceData(tab)}
               projects={projects}
               activeTab={activeTab}
             />
