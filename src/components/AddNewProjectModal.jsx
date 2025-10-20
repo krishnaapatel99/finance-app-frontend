@@ -47,12 +47,12 @@ const AddNewProjectModal = ({ onClose, onProjectAdded, editingProject }) => {
     try {
       if (isEditing) {
         await axios.put(
-          `${API}/api/project/update/${editingProject.project_id}`,
+          `${API}/api/project/update-project/${editingProject.project_id}`,
           formData
         );
         alert("✅ Project updated successfully!");
       } else {
-        await axios.post(`${API}/api/project/add`, formData);
+        await axios.post(`${API}/api/project/create-project`, formData);
         alert("✅ Project created successfully!");
       }
 
