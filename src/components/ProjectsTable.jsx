@@ -20,7 +20,6 @@ export default function ProjectsTable({ projects, onEditProject }) {
 
   return (
     <div className="p-4 md:p-6">
-      {/* 🖥️ Desktop Table */}
       <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-x-auto">
         <table className="w-full text-sm text-gray-700">
           <thead className="bg-gray-50">
@@ -54,14 +53,11 @@ export default function ProjectsTable({ projects, onEditProject }) {
                   ₹{parseFloat(p.budget).toLocaleString("en-IN")}
                 </td>
                 <td className="px-4 py-3 flex items-center gap-3">
-                  <Eye
-                    size={16}
-                    className="cursor-pointer text-gray-600 hover:text-gray-800"
-                  />
+                  <Eye size={16} className="cursor-pointer text-gray-600 hover:text-gray-800" />
                   <Pencil
                     size={16}
                     className="cursor-pointer text-gray-600 hover:text-blue-600"
-                    onClick={() => onEditProject(p)}
+                    onClick={() => onEditProject(p)} // 🆕 opens modal with project data
                   />
                 </td>
               </tr>
@@ -71,66 +67,6 @@ export default function ProjectsTable({ projects, onEditProject }) {
 
         {projects.length === 0 && (
           <div className="p-4 text-center text-gray-500">
-            No projects found. Add a new one!
-          </div>
-        )}
-      </div>
-
-      {/* 📱 Mobile Card View */}
-      <div className="md:hidden space-y-4">
-        {projects.map((p) => (
-          <div
-            key={p.project_id}
-            className="bg-white rounded-xl shadow-sm p-4 flex flex-col gap-2"
-          >
-            <div className="flex justify-between items-center">
-              <h3 className="text-base font-semibold text-gray-800">
-                {p.projectname}
-              </h3>
-              <div className="flex gap-2">
-                <Eye
-                  size={18}
-                  className="cursor-pointer text-gray-600 hover:text-gray-800"
-                />
-                <Pencil
-                  size={18}
-                  className="cursor-pointer text-gray-600 hover:text-blue-600"
-                  onClick={() => onEditProject(p)}
-                />
-              </div>
-            </div>
-
-            <p className="text-sm text-gray-600">
-              <span className="font-medium">Client:</span> {p.clientname}
-            </p>
-
-            <p className="text-sm text-gray-600">
-              <span className="font-medium">Start:</span> {formatDate(p.startdate)}
-            </p>
-
-            <p className="text-sm text-gray-600">
-              <span className="font-medium">End:</span> {formatDate(p.enddate)}
-            </p>
-
-            <p className="text-sm">
-              <span className="font-medium">Status:</span>{" "}
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                  p.status
-                )}`}
-              >
-                {p.status}
-              </span>
-            </p>
-
-            <p className="text-sm text-green-600 font-semibold">
-              Budget: ₹{parseFloat(p.budget).toLocaleString("en-IN")}
-            </p>
-          </div>
-        ))}
-
-        {projects.length === 0 && (
-          <div className="p-4 text-center text-gray-500 bg-white rounded-xl shadow-sm">
             No projects found. Add a new one!
           </div>
         )}
