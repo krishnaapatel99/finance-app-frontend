@@ -20,7 +20,7 @@ export default function ProjectsTable({ projects, onEditProject }) {
 
   return (
     <div className="p-4 md:p-6">
-      <div className=" md:block bg-white rounded-xl shadow-sm overflow-x-auto">
+      <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-x-auto">
         <table className="w-full text-sm text-gray-700">
           <thead className="bg-gray-50">
             <tr>
