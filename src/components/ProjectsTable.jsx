@@ -20,16 +20,16 @@ export default function ProjectsTable({ projects, onEditProject }) {
 
   return (
     <div className="p-4 md:p-6">
-      <div className="block bg-white rounded-xl shadow-sm overflow-x-auto md:overflow-x-visible">
-        <table className="min-w-full text-sm text-gray-700">
+      <div className=" md:block bg-white rounded-xl shadow-sm overflow-x-auto">
+        <table className="w-full text-sm text-gray-700">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Project</th>
-              <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Client</th>
-              <th className="px-4 py-3 text-left font-medium hidden md:table-cell">Start</th>
-              <th className="px-4 py-3 text-left font-medium hidden md:table-cell">End</th>
+              <th className="px-4 py-3 text-left font-medium">Client</th>
+              <th className="px-4 py-3 text-left font-medium">Start</th>
+              <th className="px-4 py-3 text-left font-medium">End</th>
               <th className="px-4 py-3 text-left font-medium">Status</th>
-              <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Budget</th>
+              <th className="px-4 py-3 text-left font-medium">Budget</th>
               <th className="px-4 py-3 text-left font-medium">Actions</th>
             </tr>
           </thead>
@@ -37,9 +37,9 @@ export default function ProjectsTable({ projects, onEditProject }) {
             {projects.map((p) => (
               <tr key={p.project_id} className="border-t hover:bg-gray-50">
                 <td className="px-4 py-3 font-semibold">{p.projectname}</td>
-                <td className="px-4 py-3 hidden sm:table-cell">{p.clientname}</td>
-                <td className="px-4 py-3 hidden md:table-cell">{formatDate(p.startdate)}</td>
-                <td className="px-4 py-3 hidden md:table-cell">{formatDate(p.enddate)}</td>
+                <td className="px-4 py-3">{p.clientname}</td>
+                <td className="px-4 py-3">{formatDate(p.startdate)}</td>
+                <td className="px-4 py-3">{formatDate(p.enddate)}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
@@ -49,7 +49,7 @@ export default function ProjectsTable({ projects, onEditProject }) {
                     {p.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 hidden sm:table-cell text-green-600 font-semibold">
+                <td className="px-4 py-3 text-green-600 font-semibold">
                   ₹{parseFloat(p.budget).toLocaleString("en-IN")}
                 </td>
                 <td className="px-4 py-3 flex items-center gap-3">
@@ -57,7 +57,7 @@ export default function ProjectsTable({ projects, onEditProject }) {
                   <Pencil
                     size={16}
                     className="cursor-pointer text-gray-600 hover:text-blue-600"
-                    onClick={() => onEditProject(p)}
+                    onClick={() => onEditProject(p)} // 🆕 opens modal with project data
                   />
                 </td>
               </tr>
