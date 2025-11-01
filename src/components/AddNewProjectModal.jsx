@@ -21,17 +21,17 @@ const AddNewProjectModal = ({ onClose, onProjectAdded, editingProject }) => {
   useEffect(() => {
     if (editingProject) {
       setFormData({
-        projectName: editingProject.projectName || "",
-  clientName: editingProject.clientName || "",
-  startDate: editingProject.startDate
-    ? editingProject.startDate.split("T")[0]
-    : "",
-  endDate: editingProject.endDate
-    ? editingProject.endDate.split("T")[0]
-    : "",
-  status: editingProject.status || "Planned",
-  assignedTeam: editingProject.assignedTeam || "",
-  budget: editingProject.budget || "0.00",
+        projectName: editingProject.projectname || "",
+        clientName: editingProject.clientname || "",
+        startDate: editingProject.startdate
+          ? editingProject.startdate.split("T")[0]
+          : "",
+        endDate: editingProject.enddate
+          ? editingProject.enddate.split("T")[0]
+          : "",
+        status: editingProject.status || "Planned",
+        assignedTeam: editingProject.assignedteam || "",
+        budget: editingProject.budget || "0.00",
       });
     }
   }, [editingProject]);
