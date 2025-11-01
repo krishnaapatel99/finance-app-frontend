@@ -20,12 +20,24 @@ export default function Finance() {
   const [editingRecord, setEditingRecord] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 🆕 Finance Summary State
+  const [financeSummary, setFinanceSummary] = useState({
+    totalIncome: 0,
+    totalExpense: 0,
+    remainingBalance: 0,
+  });
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
     fetchProjects();
     fetchFinanceData();
   }, []);
+
+  // 🆕 Re-fetch finance summary whenever project changes
+  useEffect(() => {
+    fetchFinanceSummary();
+  }, [selectedProject]);
 
   const fetchFinanceData = async () => {
     try {
@@ -43,13 +55,34 @@ export default function Finance() {
   const fetchProjects = async () => {
     try {
       const res = await axios.get(`${API}/api/project`);
-      const normalized = res.data.map(p => ({
+      const normalized = res.data.map((p) => ({
         ...p,
         projectName: p.projectName || p.projectname || "Unknown",
       }));
       setProjects(normalized);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  // 🆕 Fetch overall or per-project summary
+  const fetchFinanceSummary = async () => {
+    try {
+      const selected = projects.find(
+        (p) => p.projectName === selectedProject
+      );
+      const endpoint =
+        selectedProject === "All Projects" || !selected
+          ? `${API}/api/finance/summary`
+          : `${API}/api/finance/summary?project_id=${selected.project_id}`;
+
+      const res = await axios.get(endpoint);
+
+      if (res.data.success) {
+        setFinanceSummary(res.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching finance summary:", error);
     }
   };
 
@@ -63,13 +96,13 @@ export default function Finance() {
     try {
       await axios.delete(`${API}/api/finance/delete/${id}`);
       fetchFinanceData();
+      fetchFinanceSummary();
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Failed to delete. Check console.");
     }
   };
 
- 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -79,19 +112,27 @@ export default function Finance() {
           {/* Header */}
           <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-800">Finance Overview</h1>
-              <p className="text-gray-500 mt-1">Track income and expenses across all projects</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
+                Finance Overview
+              </h1>
+              <p className="text-gray-500 mt-1">
+                Track income and expenses across all projects
+              </p>
             </div>
             <button
-              onClick={() => { setEditingRecord(null); setIsModalOpen(true); }}
+              onClick={() => {
+                setEditingRecord(null);
+                setIsModalOpen(true);
+              }}
               className="flex items-center h-14 gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition"
             >
-              <Plus size={18} /> Add {activeTab === "income" ? "Income" : "Expense"}
+              <Plus size={18} /> Add{" "}
+              {activeTab === "income" ? "Income" : "Expense"}
             </button>
           </header>
 
-          {/* Stats */}
-         <FinanceCard />
+          {/* 🆕 Finance Summary Cards */}
+          <FinanceCard summary={financeSummary} />
 
           {/* Filters & Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
@@ -104,20 +145,30 @@ export default function Finance() {
               >
                 <option>All Projects</option>
                 {projects.map((p) => (
-                  <option key={p.project_id} value={p.projectName}>{p.projectName}</option>
+                  <option key={p.project_id} value={p.projectName}>
+                    {p.projectName}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="flex bg-gray-100 rounded-lg p-1 w-fit">
               <button
                 onClick={() => setActiveTab("income")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === "income" ? "bg-white shadow-sm text-blue-600" : "text-gray-600 hover:text-blue-500"}`}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeTab === "income"
+                    ? "bg-white shadow-sm text-blue-600"
+                    : "text-gray-600 hover:text-blue-500"
+                }`}
               >
                 Income
               </button>
               <button
                 onClick={() => setActiveTab("expense")}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${activeTab === "expense" ? "bg-white shadow-sm text-blue-600" : "text-gray-600 hover:text-blue-500"}`}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                  activeTab === "expense"
+                    ? "bg-white shadow-sm text-blue-600"
+                    : "text-gray-600 hover:text-blue-500"
+                }`}
               >
                 Expense
               </button>
@@ -141,7 +192,10 @@ export default function Finance() {
           {isModalOpen && (
             <AddIncomeModal
               onClose={() => setIsModalOpen(false)}
-              onIncomeAdded={() => fetchFinanceData()}
+              onIncomeAdded={() => {
+                fetchFinanceData();
+                fetchFinanceSummary();
+              }}
               projects={projects}
               activeTab={activeTab}
               editingRecord={editingRecord}
