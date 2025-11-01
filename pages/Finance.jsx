@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import axios from "axios";
 import Sidebar from "../src/components/Sidebar";
 import Navbar from "../src/components/Navbar";
-import StatCard from "../src/components/StatCard";
+import FinanceCard from "../src/components/FinanceCard";
 import FinanceTable from "../src/components/FinanceTable";
 import AddIncomeModal from "../src/components/AddIncomeModal";
 
@@ -69,10 +69,7 @@ export default function Finance() {
     }
   };
 
-  const totalIncome = incomes.reduce((acc, i) => acc + Number(i.amount), 0);
-  const totalExpenses = expenses.reduce((acc, i) => acc + Number(i.amount), 0);
-  const netProfit = totalIncome - totalExpenses;
-
+ 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -94,7 +91,7 @@ export default function Finance() {
           </header>
 
           {/* Stats */}
-          <StatCard totalIncome={totalIncome} totalExpenses={totalExpenses} netProfit={netProfit} />
+         <FinanceCard />
 
           {/* Filters & Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
