@@ -9,9 +9,9 @@ const formatCurrency = (amount) =>
   }).format(parseFloat(amount || 0));
 
 export default function FinanceCard({ summary }) {
-  const { totalIncome, totalExpense, remainingBalance } = summary || {};
+  const { totalBudget, totalExpense, remainingBalance } = summary || {};
   const balancePercent =
-    totalIncome > 0 ? ((remainingBalance / totalIncome) * 100).toFixed(1) : 0;
+    totalBudget > 0 ? ((remainingBalance / totalBudget) * 100).toFixed(1) : 0;
 
   return (
     <div className="flex flex-col">
@@ -22,7 +22,7 @@ export default function FinanceCard({ summary }) {
       >
         <p className="text-gray-500 text-sm mb-1">Total Income</p>
         <h3 className="text-2xl font-semibold text-slate-800">
-          {formatCurrency(totalIncome)}
+          {formatCurrency(totalBudget)}
         </h3>
         <p className="text-sm font-medium text-green-500">+1.5%</p>
       </div>
